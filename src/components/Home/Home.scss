@@ -1,0 +1,93 @@
+.card-list{
+  padding: 20px 0;
+  width: 50%;
+  margin: auto;
+  &__controls{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  &__head{
+    display: flex;
+    border: 1px solid #000;
+    border-bottom: 0;
+    &_row{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 25%;
+      padding: 5px 0;
+    }
+    &_row + &_row{
+      border-left: 1px solid #000;
+    }
+  }
+  &__item + &__item{
+    border-top: 0;
+  }
+  &__item{
+    border: 1px solid #000;
+    display: flex;
+    &_row + &_row{
+      border-left: 1px solid #000;
+    }
+    &_row{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 25%;
+      a{
+        display: flex;
+      }
+      img{
+        width: 80%;
+        margin: auto;
+      }
+    }
+    &--img{
+      padding: 20px 0;
+    }
+    &--tags{
+      position: relative;
+      padding: 0 25px;
+      .tags-wrap{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+      }
+      span{
+        margin: 5px;
+        padding: 5px 10px;
+        border-radius: 12px;
+        color: #fff;
+        margin-bottom: 0;
+        background-color: deepskyblue;
+        transition: all .4s;
+        &:hover{
+          background-color: lighten(deepskyblue, 10%);
+        }
+      }
+      &.active{
+        .card-list__item_edit{
+          display: flex;
+        }
+      }
+    }
+    &_edit{
+      display: none;
+      position: absolute;
+      bottom: 0;
+      height: 35px;
+      width: 100%;
+      input{
+        height: 100%;
+        width: 70%;
+        padding-left: 15px;
+      }
+      button{
+        height: 100%;
+        width: 30%;
+      }
+    }
+  }
+}

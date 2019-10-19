@@ -1,0 +1,12 @@
+.card-details{
+  width: 80%;
+  margin: auto;
+  padding: 50px 25px;
+  &__item{
+    margin-bottom: 20px;
+    &_title{
+      font-weight: bold;
+      margin-right: 10px;
+    }
+  }
+}
