@@ -50,10 +50,10 @@ class Home extends Component {
         let cardList = JSON.parse(this.props.cards);
 
         if(this.state.sortSelect === 'Likes'){
-            cardList = this.props.cards.sort((a, b) => a.likes - b.likes);
+            cardList = cardList.sort((a, b) => a.likes - b.likes);
         }
         else if(this.state.sortSelect === 'Comment'){
-            cardList = this.props.cards.sort((a, b) => a.comments - b.comments);
+            cardList = cardList.sort((a, b) => a.comments - b.comments);
         }
 
         console.log(cardList)
