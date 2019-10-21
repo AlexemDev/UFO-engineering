@@ -1,0 +1,9 @@
+.card-details {
+  width: 80%;
+  margin: auto;
+  padding: 50px 25px; }
+  .card-details__item {
+    margin-bottom: 20px; }
+    .card-details__item_title {
+      font-weight: bold;
+      margin-right: 10px; }
