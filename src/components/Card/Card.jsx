@@ -2,59 +2,61 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 
 import './Card.css'
+import {getCardsDetails} from "../../actions/SessionActions";
 
 class Card extends Component {
-    state = {
-        cardID: 0
-    }
 
-    componentDidMount() {
+
+    componentWillMount() {
         const cardID = new URLSearchParams(this.props.location.search).get("cardid");
-        this.setState({cardID : cardID})
-
+        this.props.onGetCardsDetails(cardID);
     }
 
     render(){
-        const cards = this.props.allCards.cards;
+        let cardsDetails = JSON.parse(this.props.allCards);
+        cardsDetails.cards = cardsDetails.cards.filter((cards) => {
+            return cards.id == +cardsDetails.filterCards;
+        });
+
         return (
             <div className={'card-details'}>
                 <div className={'card-details__item card-details__img'}>
-                    <img src={cards[this.state.cardID].webformatURL} alt=""/>
+                    <img src={ cardsDetails.cards.length && cardsDetails.cards[0].webformatURL} alt=""/>
                 </div>
 
                 <div className={'card-details__item'}>
                     <span className={'card-details__item_title'}>Height:</span>
-                    <span className={'card-details__item_value'}>{cards[this.state.cardID].webformatHeight}</span>
+                    <span className={'card-details__item_value'}>{cardsDetails.cards.length && cardsDetails.cards[0].webformatHeight}</span>
                 </div>
 
                 <div className={'card-details__item'}>
                     <span className={'card-details__item_title'}>Width:</span>
-                    <span className={'card-details__item_value'}>{cards[this.state.cardID].webformatWidth}</span>
+                    <span className={'card-details__item_value'}>{cardsDetails.cards.length && cardsDetails.cards[0].webformatWidth}</span>
                 </div>
 
                 <div className={'card-details__item'}>
                     <span className={'card-details__item_title'}>Downloads:</span>
-                    <span className={'card-details__item_value'}>{cards[this.state.cardID].downloads}</span>
+                    <span className={'card-details__item_value'}>{cardsDetails.cards.length && cardsDetails.cards[0].downloads}</span>
                 </div>
 
                 <div className={'card-details__item'}>
                     <span className={'card-details__item_title'}>Comments:</span>
-                    <span className={'card-details__item_value'}>{cards[this.state.cardID].comments}</span>
+                    <span className={'card-details__item_value'}>{cardsDetails.cards.length && cardsDetails.cards[0].comments}</span>
                 </div>
 
                 <div className={'card-details__item'}>
                     <span className={'card-details__item_title'}>Likes:</span>
-                    <span className={'card-details__item_value'}>{cards[this.state.cardID].likes}</span>
+                    <span className={'card-details__item_value'}>{cardsDetails.cards.length && cardsDetails.cards[0].likes}</span>
                 </div>
 
                 <div className={'card-details__item'}>
                     <span className={'card-details__item_title'}>Tags:</span>
-                    <span className={'card-details__item_value'}>{cards[this.state.cardID].tags}</span>
+                    <span className={'card-details__item_value'}>{cardsDetails.cards.length && cardsDetails.cards[0].tags}</span>
                 </div>
 
                 <div className={'card-details__item'}>
                     <span className={'card-details__item_title'}>Views:</span>
-                    <span className={'card-details__item_value'}>{cards[this.state.cardID].views}</span>
+                    <span className={'card-details__item_value'}>{cardsDetails.cards.length && cardsDetails.cards[0].views}</span>
                 </div>
 
 
@@ -65,9 +67,13 @@ class Card extends Component {
 };
 
 const mapStateToProps = state => ({
-    allCards: state
+    allCards: JSON.stringify(state)
 });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+    onGetCardsDetails: (id) => {
+        dispatch(getCardsDetails(id))
+    }
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Card);

@@ -9,9 +9,21 @@ import Filter from "./Filter/Filter";
 
 
 class Home extends Component {
-    state = {
-        sortSelect: ''
+    constructor(props) {
+        super();
+
+        this.state = {
+            sortSelect: ''
+        }
+
+        this.tagsContainer = [];
+        this.tagsWrap = [];
+        this.inputAddTags = [];
+        this.editButtonTags = [];
     }
+
+
+
 
     componentDidMount() {
         this.props.onGetCards();
@@ -29,18 +41,17 @@ class Home extends Component {
         }, 300)
     }
 
-    editTags = (e) => {
-        e.target.closest('.card-list__item--tags').classList.add('active');
+    editTags = (index) => {
+        this.tagsWrap[index].classList.add('active');
     }
 
-    addTag = (e) => {
-        let tagFieldValue = e.target.closest('.card-list__item_edit').querySelector('input');
-        let indexItem = e.target.closest('.card-list__item').id;
-        let cardList = this.props.cards;
-        cardList[indexItem].tags = cardList[indexItem].tags + ', ' + tagFieldValue.value;
+    addTag = (index) => {
+        let indexItem = this.tagsContainer[index].id;
+        let cardList = JSON.parse(this.props.cards);
+        cardList[indexItem].tags = cardList[indexItem].tags + ', ' + this.inputAddTags[index].value;
         this.props.onEditTags(cardList);
-        tagFieldValue.value = '';
-        e.target.closest('.card-list__item--tags').classList.remove('active');
+        this.inputAddTags[index].value = '';
+        this.tagsWrap[index].classList.remove('active');
     }
 
 
@@ -48,15 +59,28 @@ class Home extends Component {
 
     render(){
         let cardList = JSON.parse(this.props.cards);
+        let filterArray = cardList.filterCards.split(', ');
+
+        var filtered = cardList.cards.filter(cards => {
+            var itemTags = cards.tags.split(", ");
+            for (var i = 0; i < filterArray.length; i++) {
+                var temp = itemTags.filter(item => item.includes(filterArray[i]));
+                if (temp == '')
+                    return false;
+            }
+            return true;
+        })
+
+        if(cardList.filterCards !== ''){
+            cardList.cards = filtered
+        }
 
         if(this.state.sortSelect === 'Likes'){
-            cardList = cardList.sort((a, b) => a.likes - b.likes);
+            cardList.cards = cardList.cards.sort((a, b) => a.likes - b.likes);
         }
         else if(this.state.sortSelect === 'Comment'){
-            cardList = cardList.sort((a, b) => a.comments - b.comments);
+            cardList.cards = cardList.cards.sort((a, b) => a.comments - b.comments);
         }
-
-        console.log(cardList)
 
         return(
             <div className={'card-list'}>
@@ -71,16 +95,16 @@ class Home extends Component {
                     <div className={'card-list__head_row'}>Comments</div>
                 </div>
                 {
-                    cardList.length && cardList.map((card, index) =>
-                        <div id={index} className={'card-list__item'}>
+                    cardList.cards.length && cardList.cards.map((card, index) =>
+                        <div id={index} className={'card-list__item'} ref={ ref => (this.tagsContainer[index] = ref)}>
                             <div className={'card-list__item_row card-list__item--img'}>
-                                <Link to={'/card/?cardid=' + index} >
+                                <Link to={'/card/?cardid=' + card.id} >
                                     <img src={card.webformatURL} alt="" />
                                 </Link>
 
                             </div>
-                            <div className={'card-list__item_row card-list__item--tags'}>
-                                <div className={'tags-wrap'} onDoubleClick={this.editTags}>
+                            <div className={'card-list__item_row card-list__item--tags'} ref={ ref => (this.tagsWrap[index] = ref)}>
+                                <div className={'tags-wrap'} onDoubleClick={() => this.editTags(index)}>
                                     {
                                         card.tags.split(', ').map((tag) =>
                                             <span>{tag}</span>
@@ -88,8 +112,8 @@ class Home extends Component {
                                     }
                                 </div>
                                 <div className={'card-list__item_edit'}>
-                                    <input id={index} type="text" placeholder={'Add tags'}/>
-                                    <button onClick={this.addTag}>Add Tag</button>
+                                    <input id={index} type="text" placeholder={'Add tags'} ref={ ref => (this.inputAddTags[index] = ref)}/>
+                                    <button onClick={() => (this.addTag(index))} ref={ ref => (this.editButtonTags[index] = ref)}>Add Tag</button>
                                 </div>
 
                             </div>
@@ -108,7 +132,7 @@ class Home extends Component {
 }
 
 const mapStateToProps = state => ({
-    cards: JSON.stringify(state.cards.filter(cards => cards.tags.includes(state.filterCards))),
+    cards: JSON.stringify(state),
 });
 
 const mapDispatchToProps = dispatch => ({
